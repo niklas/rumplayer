@@ -48,6 +48,7 @@ class Rumplayer::Server
       watcher.say "Buddies: %s" % @watchers.map(&:name).join(', ')
     end
     @watchers << watcher
+    log "currently connected: %i" % @watchers.size
   end
 
   def unregister(client)
@@ -81,6 +82,7 @@ class Rumplayer::Server
   def remove_watcher watcher
     @watchers.delete(watcher)
     log "disconnected #{watcher}"
+    log "currently connected: %i" % @watchers.size
     say("#{watcher.name} disconnected")
   end
 
