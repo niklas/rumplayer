@@ -18,8 +18,8 @@ end.parse!
 
 include Rumplayer
 if ARGV.empty?
-  @client = Client.wait
+  Client.wait
 else
-  @client = Client.run(ARGV)
+  Client.run(ARGV)
 end
 
