@@ -5,8 +5,21 @@ class Rumplayer::Server
   include DRb::DRbUndumped
 
   class Watcher < Struct.new(:handler, :name)
+    @@last_index = 0
+    attr_reader :index
+    def self.next_index
+      @@last_index += 1
+      @@last_index
+    end
+    def initialize(*args)
+      super
+      @index = self.class.next_index
+    end
     def method_missing(method_name, *args, &block)
       handler.__send__(method_name, *args, &block)
+    end
+    def to_s
+      "#{name} (#{index}) [#{handler.__drburi}]"
     end
   end
 
@@ -26,7 +39,7 @@ class Rumplayer::Server
 
   def register(client, name=nil)
     watcher = Watcher.new(client, name || client.inspect)
-    log "connected #{watcher.name} [#{watcher.handler.uri}]"
+    log "connected #{watcher}"
 
     say("#{watcher.name} connected")
     watcher.say "Connected."
@@ -66,7 +79,7 @@ class Rumplayer::Server
 
   def remove_watcher watcher
     @watchers.delete(watcher)
-    log "disconnected #{watcher.name}"
+    log "disconnected #{watcher}"
     say("#{watcher.name} disconnected")
   end
 

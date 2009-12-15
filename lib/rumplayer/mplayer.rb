@@ -44,9 +44,12 @@ module Rumplayer::Mplayer
   def forward_keys
     while @mplayer
       char = read_char
-      buddies.key(char)
-      leave if char == "\003"
-      leave if char == "q"
+      if ["\003", "q"].include? char
+        buddies.say("#{username} has quit. You should quit, too (with 'q' or ctrl+c)")
+        buddies.leave
+      else
+        buddies.key(char)
+      end
     end
   end
 

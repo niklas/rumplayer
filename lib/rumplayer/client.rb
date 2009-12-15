@@ -53,7 +53,7 @@ class Rumplayer::Client
     log "joining loose threads"
     @mplayer_thread.join(1) if @mplayer_thread
     log "exiting"
-    log "killing remaining threads: %s" % Thread.list.map(&:inspect).join(',')
+    say "killing remaining %i threads (you may want ctrl+c manually)" % Thread.list.size
     Thread.list.map(&:kill)
     exit
   end
