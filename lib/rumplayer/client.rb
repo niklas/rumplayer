@@ -70,7 +70,7 @@ class Rumplayer::Client
 
   def tell argv=argv
     log "Telling #{argv.inspect}"
-    buddies.run(argv)
+    buddies.run(argv.dup)
   end
 
   def buddies
