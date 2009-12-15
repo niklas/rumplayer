@@ -71,6 +71,8 @@ class Rumplayer::Server
           yield(watcher)
         rescue DRb::DRbConnError => e
           remove_watcher(watcher)
+        rescue RangeError => e
+          log "got RangeError, trying to continue"
         end
       end
     end
