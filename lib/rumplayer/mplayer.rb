@@ -45,7 +45,7 @@ module Rumplayer::Mplayer
     while @mplayer
       char = read_char
       if ["\003", "q"].include? char
-        buddies.say("#{username} has quit. You should quit, too (with 'q' or ctrl+c)")
+        buddies.say("#{user} has quit. You should quit, too (with 'q' or ctrl+c)")
         buddies.leave
       else
         buddies.key(char)

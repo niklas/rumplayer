@@ -41,7 +41,7 @@ class Rumplayer::Client
   def enter
     say "Connecting.."
     log "Started as %s" % DRb.start_service.uri
-    buddies.register(self, username)
+    buddies.register(self, name)
     trap('INT') { leave }
   end
 
