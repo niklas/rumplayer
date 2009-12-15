@@ -2,11 +2,20 @@ require 'drb/observer'
 class Rumplayer::Server
   include Rumplayer::Log
   include Rumplayer::Config
-  include DRb::DRbObservable
   include DRb::DRbUndumped
+
+  class Watcher < Struct.new(:handler, :name)
+    def method_missing(method_name, *args, &block)
+      handler.__send__(method_name, *args, &block)
+    end
+  end
 
   def self.start(argv=[])
     new.start
+  end
+
+  def initialize
+    @watchers = []
   end
 
   def start
@@ -15,15 +24,28 @@ class Rumplayer::Server
     DRb.thread.join
   end
 
-  def run(argv=[])
-    log "One Client told #{argv.inspect}"
-    changed
-    if @observer_peers
-      log "Telling all other #{@observer_peers.size} clients" 
-      notify_observers(argv)
-      log "Told observers"
-    else
-      log "Told no one. Your are watching alone"
+  def register(client, name=nil)
+    watcher = Watcher.new(client, name || client.inspect)
+    log "connected #{watcher.inspect}"
+
+    say("#{watcher.name} connected")
+    @watchers << watcher
+    watcher.say("Connected.")
+  end
+
+  def method_missing(method_name, *args, &block)
+    log "#{method_name} to all: #{args.inspect}"
+    each_watcher do |watcher|
+      watcher.__send__(method_name, *args, &block)
     end
   end
+
+  def each_watcher
+    unless @watchers.blank?
+      @watchers.each do |watcher|
+        yield(watcher)
+      end
+    end
+  end
+
 end

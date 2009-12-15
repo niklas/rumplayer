@@ -8,6 +8,10 @@ module Rumplayer
     def uri
       "druby://localhost:18383"
     end
+
+    def username
+      @username = `whoami`.chomp
+    end
   end
 
   module Log

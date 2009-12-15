@@ -17,27 +17,30 @@ class Rumplayer::Client
   end
 
   def run_and_tell argv=argv
-    run(argv)
     tell(argv)
+    run(argv)
   end
 
   def run argv=argv
     log "Running #{argv.inspect}"
-    #system(Rumplayer::MplayerCommand, *argv)
-    system('ls', *( %w(-l) + argv ) )
+    system(Rumplayer::MplayerCommand, *argv)
   end
 
   def wait
-    log "waiting"
+    say "Connecting.."
     DRb.start_service
-    buddies.add_observer(self)
+    buddies.register(self, username)
+    say "waiting for command"
     sleep 100000
-    log "stopped waiting"
+    log "tired of waiting"
   end
 
-  def update(argv=[])
-    log "Got told: #{argv.inspect}"
-    run(argv)
+  def update(*args)
+    log "Got told: #{args.inspect}"
+  end
+
+  def say(message="no message")
+    STDERR.puts message
   end
 
   def tell argv=argv
