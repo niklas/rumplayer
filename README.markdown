@@ -13,8 +13,9 @@ With RuMplayer you can watch them simultaneously without having to leave your co
 
 == Installation
 
-    gem install gemcutter
-    gem install rumplayer
+    (sudo) gem install gemcutter
+    (sudo) gem tumble
+    (sudo) gem install rumplayer
 
     rumplayer
     CTRL+C
