@@ -61,8 +61,15 @@ class Rumplayer::Client
   end
 
   private
-  def run_mplayer argv=argv
-    system(Rumplayer::MplayerCommand, *argv)
+  def run_mplayer argv=argv, options ={}
+    rd, wr = IO.pipe
+    @mplayer = fork do
+      STDIN.reopen(rd)
+      command = [Rumplayer::MplayerCommand, '-slave'] + options.to_a.flatten + argv
+      exec(*command)
+    end
+    Process::detach(@mplayer)
+    @mplayer_pipe = wr
     log "Finished playing #{argv.inspect}"
   end
 end
