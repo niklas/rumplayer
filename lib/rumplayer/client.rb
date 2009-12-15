@@ -52,13 +52,13 @@ class Rumplayer::Client
 
   def leave
     log "leaving"
-    buddies.unregister(self)
+    buddies.unregister(self) if @buddies
     DRb.stop_service
     kill_mplayer!
     log "joining loose threads"
     @mplayer_thread.join(1) if @mplayer_thread
     log "exiting"
-    DRb.thread.join
+    DRb.thread.join if DRb.thread
     say "killing remaining %i threads (you may want ctrl+c manually)" % Thread.list.size
     Thread.list.map(&:kill)
     exit
@@ -74,7 +74,7 @@ class Rumplayer::Client
   end
 
   def buddies
-    @buddies ||= DRbObject.new_with_uri(config['uri'])
+    @buddies ||= DRbObject.new(nil, config['uri'])
   end
 
   def is_slave?
