@@ -10,4 +10,8 @@ class Rumplayer::Server
     DRb.start_service(uri, self)
     DRb.thread.join
   end
+
+  def run(argv=[])
+    log "One Client told #{argv.inspect}"
+  end
 end

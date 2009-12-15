@@ -7,7 +7,7 @@ class Rumplayer::Client
   end
 
   def self.run(argv=[])
-    new(argv).run
+    new(argv).run_and_tell
   end
 
   attr_reader :argv
@@ -15,9 +15,12 @@ class Rumplayer::Client
     @argv = argv
   end
 
-  def run argv=argv
+  def run_and_tell argv=argv
     log "Running #{argv.inspect}"
     tell(argv)
+  end
+
+  def run
     system(MplayerCommand, *argv)
   end
 
@@ -31,6 +34,6 @@ class Rumplayer::Client
   end
 
   def buddies
-    @buddies ||= DrbObject.new_with_uri(uri)
+    @buddies ||= DRbObject.new_with_uri(uri)
   end
 end
