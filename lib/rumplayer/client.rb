@@ -1,8 +1,8 @@
-require 'drb'
-
 class Rumplayer::Client
+  include Rumplayer::Log
+
   def self.wait
-    STDERR.puts "waiting"
+    log "waiting"
   end
 
   def self.run(argv=[])
@@ -15,12 +15,12 @@ class Rumplayer::Client
   end
 
   def run argv=argv
-    STDERR.puts "Running #{argv.inspect}"
+    log "Running #{argv.inspect}"
     tell(argv)
     system(MplayerCommand, *argv)
   end
 
   def tell argv=argv
-    STDERR.puts "Telling #{argv.inspect}"
+    log "Telling #{argv.inspect}"
   end
 end

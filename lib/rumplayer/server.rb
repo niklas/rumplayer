@@ -1,6 +1,6 @@
-require 'drb'
 class Rumplayer::Server
+  include Rumplayer::Log
   def self.start(argv=[])
-    STDERR.puts "Starting Server"
+    log "Starting Server"
   end
 end
