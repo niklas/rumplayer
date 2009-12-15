@@ -43,10 +43,6 @@ class Rumplayer::Client
     log "tired of waiting"
   end
 
-  def update(*args)
-    log "Got told: #{args.inspect}"
-  end
-
   def say(message="no message")
     STDERR.puts message
   end
