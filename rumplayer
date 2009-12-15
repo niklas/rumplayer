@@ -11,9 +11,19 @@ ActiveSupport::Dependencies::load_paths << File.join(APP_ROOT, "lib")
 $options = {}
 
 OptionParser.new do |opts|
-  opts.banner = "RuMplayer - play common movies synchronously"
-  opts.banner = "Usage: #{$0} [options]"
+  opts.banner = <<-EOTEXT
+RuMplayer - play common movies synchronously
 
+Usage: #{$0} [options] [file(s)]
+  #{$0}  (no files)            start and listen for commands
+  #{$0}  one or more files     start distributed playback
+
+Hint: All watchers must start this command from the same directory,
+      all paths are relative
+  EOTEXT
+
+  opts.separator ''
+  opts.separator "Options:"
   opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
     $options[:verbose] = v
   end
