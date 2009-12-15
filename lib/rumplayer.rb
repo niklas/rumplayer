@@ -10,7 +10,7 @@ module Rumplayer
     end
 
     def username
-      @username = `whoami`.chomp
+      @username ||= [`whoami`.chomp, `hostname`.chomp].join('@')
     end
   end
 
