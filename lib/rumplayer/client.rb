@@ -1,6 +1,7 @@
 class Rumplayer::Client
   include Rumplayer::Log
   include Rumplayer::Config
+  include Rumplayer::Mplayer
   include DRb::DRbUndumped
 
   def self.wait
@@ -34,13 +35,16 @@ class Rumplayer::Client
     say "Connecting.."
     log "Started as %s" % DRb.start_service.uri
     buddies.register(self, username)
-    trap('INT') do
-      buddies.unregister(self)
-      exit
-    end
+    trap('INT') { leave }
     say "waiting for command"
     sleep 100000
     log "tired of waiting"
+  end
+
+  def leave
+    buddies.unregister(self)
+    kill_mplayer!
+    exit
   end
 
   def say(message="no message")
@@ -60,46 +64,4 @@ class Rumplayer::Client
     argv.empty?
   end
 
-  def key(char)
-    log "Pressed #{char}"
-  end
-
-  private
-  def run_mplayer argv=argv, options ={}
-    rd, wr = IO.pipe
-    @mplayer = fork do
-      STDIN.reopen(rd)
-      command = [Rumplayer::MplayerCommand] + options.to_a.flatten + argv
-      exec(*command)
-    end
-    Process::detach(@mplayer)
-    @mplayer_pipe = wr
-    forward_keys
-    log "Finished playing #{argv.inspect}"
-  end
-
-  def forward_keys
-    while true
-      char = read_char
-      key(char)
-      buddies.key(char)
-    end
-  end
-
-  def read_char
-    begin
-      # save previous state of stty
-      old_state = `stty -g`
-      # disable echoing and enable raw (not having to press enter)
-      system "stty raw -echo"
-      c = STDIN.getc.chr
-    rescue => ex
-      puts "#{ex.class}: #{ex.message}"
-      puts ex.backtrace
-    ensure
-      # restore previous state of stty
-      system "stty #{old_state}"
-    end
-    return c
-  end
 end
