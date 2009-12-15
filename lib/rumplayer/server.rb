@@ -26,11 +26,16 @@ class Rumplayer::Server
 
   def register(client, name=nil)
     watcher = Watcher.new(client, name || client.inspect)
-    log "connected #{watcher.name}"
+    log "connected #{watcher.name} [#{watcher.handler.uri}]"
 
     say("#{watcher.name} connected")
+    watcher.say "Connected."
+    if @watchers.empty?
+      watcher.say "no other buddies connected (yet)"
+    else
+      watcher.say "Buddies: %s" % @watchers.map(&:name).join(', ')
+    end
     @watchers << watcher
-    watcher.say("Connected.")
   end
 
   def unregister(client)

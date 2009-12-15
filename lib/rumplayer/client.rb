@@ -9,7 +9,7 @@ class Rumplayer::Client
   end
 
   def self.run(argv=[])
-    new(argv).run_and_tell
+    client = new(argv).run_and_tell
   end
 
   attr_reader :argv
@@ -18,32 +18,43 @@ class Rumplayer::Client
   end
 
   def run_and_tell argv=argv
+    enter
     tell(argv)
-    run(argv)
   end
 
   def run argv=argv
     log "Running #{argv.inspect}"
     if is_slave?
-      Thread.start{ run_mplayer argv }
+      @mplayer_thread = Thread.start{ run_mplayer argv }
     else
       run_mplayer argv
     end
   end
 
   def wait
-    say "Connecting.."
-    log "Started as %s" % DRb.start_service.uri
-    buddies.register(self, username)
-    trap('INT') { leave }
+    enter
     say "waiting for command"
     sleep 100000
     log "tired of waiting"
   end
 
+  def enter
+    say "Connecting.."
+    log "Started as %s" % DRb.start_service.uri
+    buddies.register(self, username)
+    trap('INT') { leave }
+  end
+
   def leave
+    log "leaving"
     buddies.unregister(self)
+    DRb.stop_service
     kill_mplayer!
+    log "joining loose threads"
+    @mplayer_thread.join(1) if @mplayer_thread
+    log "exiting"
+    log "killing remaining threads: %s" % Thread.list.map(&:inspect).join(',')
+    Thread.list.map(&:kill)
     exit
   end
 

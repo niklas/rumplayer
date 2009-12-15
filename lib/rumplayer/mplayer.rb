@@ -3,9 +3,11 @@ module Rumplayer::Mplayer
   MplayerOptions = %w(-really-quiet)
 
   def key(char)
+    leave if char == "\003"
+    leave if char == "q"
     synchronize do
-      @mplayer_pipe.print char if @mplayer_pipe
-    end
+      @mplayer_pipe.print char
+    end if @mplayer_pipe
   end
 
   def kill_mplayer!
@@ -25,6 +27,7 @@ module Rumplayer::Mplayer
   private
   def run_mplayer argv=argv, options ={}
     kill_mplayer!
+    log "starting mplayer"
     rd, wr = IO.pipe
     @mplayer = fork do
       STDIN.reopen(rd)
@@ -39,12 +42,11 @@ module Rumplayer::Mplayer
   end
 
   def forward_keys
-    while true
+    while @mplayer
       char = read_char
+      buddies.key(char)
       leave if char == "\003"
       leave if char == "q"
-      key(char)
-      buddies.key(char)
     end
   end
 
