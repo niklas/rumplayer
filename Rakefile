@@ -24,6 +24,8 @@ begin
       lib/rumplayer/server.rb
       lib/rumplayer/mplayer.rb
       lib/rumplayer/config.rb
+
+      lib/drbfire.rb
     }
   end  
   Jeweler::GemcutterTasks.new  
