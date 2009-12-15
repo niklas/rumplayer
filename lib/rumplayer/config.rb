@@ -22,7 +22,7 @@ module Rumplayer
 
     def default_config
       {
-        'uri' => "druby://localhost:18383"
+        'uri' => "drbfire://localhost:18383"
       }
     end
 

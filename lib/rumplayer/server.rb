@@ -1,8 +1,7 @@
-require 'drb/observer'
 class Rumplayer::Server
+  include DRb::DRbUndumped
   include Rumplayer::Log
   include Rumplayer::Config
-  include DRb::DRbUndumped
 
   class Watcher < Struct.new(:handler, :name)
     @@last_index = 0
@@ -33,7 +32,7 @@ class Rumplayer::Server
 
   def start
     log "Starting Server"
-    DRb.start_service(config['uri'], self)
+    DRb.start_service(config['uri'], self, DRbFire::ROLE => DRbFire::SERVER)
     DRb.thread.join
   end
 

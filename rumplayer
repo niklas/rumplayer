@@ -8,6 +8,7 @@ require 'active_support'
 APP_ROOT = File.expand_path( File.dirname(__FILE__) )
 ActiveSupport::Dependencies::load_paths << File.join(APP_ROOT, "lib")
 
+
 $options = {}
 
 OptionParser.new do |opts|

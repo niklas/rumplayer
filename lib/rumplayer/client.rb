@@ -1,8 +1,8 @@
 class Rumplayer::Client
+  include DRb::DRbUndumped
   include Rumplayer::Log
   include Rumplayer::Config
   include Rumplayer::Mplayer
-  include DRb::DRbUndumped
 
   def self.wait
     new.wait
@@ -40,9 +40,14 @@ class Rumplayer::Client
 
   def enter
     say "Connecting.."
-    log "Started as %s" % DRb.start_service.uri
+    log "Started as %s" % start_service.uri
     buddies.register(self, name)
     trap('INT') { leave }
+  end
+
+  def start_service
+    @service = DRb.start_service(config['uri'], self, DRbFire::ROLE => DRbFire::CLIENT)
+    @service
   end
 
   def leave
@@ -53,6 +58,7 @@ class Rumplayer::Client
     log "joining loose threads"
     @mplayer_thread.join(1) if @mplayer_thread
     log "exiting"
+    DRb.thread.join
     say "killing remaining %i threads (you may want ctrl+c manually)" % Thread.list.size
     Thread.list.map(&:kill)
     exit

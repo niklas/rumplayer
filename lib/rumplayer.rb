@@ -1,5 +1,4 @@
-require 'drb/drb'
-
+require_dependency 'drbfire'
 module Rumplayer
   include DRb::DRbUndumped
 
