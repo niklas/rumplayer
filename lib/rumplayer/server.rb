@@ -33,6 +33,13 @@ class Rumplayer::Server
     watcher.say("Connected.")
   end
 
+  def unregister(client)
+    if watcher = @watchers.find {|w| w.handler == client }
+      watcher.say "Goodbye"
+      remove_watcher watcher
+    end
+  end
+
   def method_missing(method_name, *args, &block)
     log "#{method_name} to all: #{args.inspect}"
     each_watcher do |watcher|
@@ -46,11 +53,16 @@ class Rumplayer::Server
         begin
           yield(watcher)
         rescue DRb::DRbConnError => e
-          @watchers.delete(watcher)
-          log "disconnected #{watcher.name}"
+          remove_watcher(watcher)
         end
       end
     end
+  end
+
+  def remove_watcher watcher
+    @watchers.delete(watcher)
+    log "disconnected #{watcher.name}"
+    say("#{watcher.name} disconnected")
   end
 
 end

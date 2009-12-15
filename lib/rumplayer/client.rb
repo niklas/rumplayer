@@ -34,6 +34,10 @@ class Rumplayer::Client
     say "Connecting.."
     log "Started as %s" % DRb.start_service.uri
     buddies.register(self, username)
+    trap('INT') do
+      buddies.unregister(self)
+      exit
+    end
     say "waiting for command"
     sleep 100000
     log "tired of waiting"
