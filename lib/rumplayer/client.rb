@@ -1,6 +1,7 @@
 class Rumplayer::Client
   include Rumplayer::Log
   include Rumplayer::Config
+  include DRb::DRbUndumped
 
   def self.wait
     new.wait
@@ -16,16 +17,27 @@ class Rumplayer::Client
   end
 
   def run_and_tell argv=argv
-    log "Running #{argv.inspect}"
+    run(argv)
     tell(argv)
   end
 
-  def run
-    system(MplayerCommand, *argv)
+  def run argv=argv
+    log "Running #{argv.inspect}"
+    #system(Rumplayer::MplayerCommand, *argv)
+    system('ls', *( %w(-l) + argv ) )
   end
 
   def wait
     log "waiting"
+    DRb.start_service
+    buddies.add_observer(self)
+    sleep 100000
+    log "stopped waiting"
+  end
+
+  def update(argv=[])
+    log "Got told: #{argv.inspect}"
+    run(argv)
   end
 
   def tell argv=argv

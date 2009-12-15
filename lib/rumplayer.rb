@@ -1,6 +1,7 @@
 require 'drb/drb'
 
 module Rumplayer
+  include DRb::DRbUndumped
   MplayerCommand = `which mplayer`.chomp
 
   module Config
