@@ -1,5 +1,25 @@
 #!/usr/bin/ruby
 
 require 'rubygems'
+require 'optparse'
 
-STDERR.puts "Rumplayer"
+require 'lib/rumplayer'
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "RuMplayer - play common movies synchronously"
+  opts.banner = "Usage: #{$0} [options]"
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+
+end.parse!
+
+include Rumplayer
+if ARGV.empty?
+  @client = Client.wait
+else
+  @client = Client.run(ARGV)
+end
+
