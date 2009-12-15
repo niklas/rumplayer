@@ -1,7 +1,13 @@
-require 'drb'
+require 'drb/drb'
 
 module Rumplayer
   MplayerCommand = `which mplayer`.chomp
+
+  module Config
+    def uri
+      "druby://localhost:18383"
+    end
+  end
 
   module Log
     def log(message)
@@ -11,5 +17,3 @@ module Rumplayer
     end
   end
 end
-require 'lib/rumplayer/server'
-require 'lib/rumplayer/client'

@@ -3,7 +3,11 @@
 require 'rubygems'
 require 'optparse'
 
-require 'lib/rumplayer'
+require 'active_support'
+
+APP_ROOT = File.expand_path( File.dirname(__FILE__) )
+ActiveSupport::Dependencies::load_paths << File.join(APP_ROOT, "lib")
+
 $options = {}
 
 OptionParser.new do |opts|
@@ -14,12 +18,20 @@ OptionParser.new do |opts|
     $options[:verbose] = v
   end
 
+  opts.on("-s", "--server", "Start Server on configured uri") do |s|
+    $options[:server] = s
+  end
+
+
 end.parse!
 
-include Rumplayer
-if ARGV.empty?
-  Client.wait
+if $options[:server]
+  Rumplayer::Server.start
 else
-  Client.run(ARGV)
+  if ARGV.empty?
+    Rumplayer::Client.wait
+  else
+    Rumplayer::Client.run(ARGV)
+  end
 end
 

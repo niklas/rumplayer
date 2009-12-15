@@ -1,8 +1,9 @@
 class Rumplayer::Client
   include Rumplayer::Log
+  include Rumplayer::Config
 
   def self.wait
-    log "waiting"
+    new.wait
   end
 
   def self.run(argv=[])
@@ -20,7 +21,16 @@ class Rumplayer::Client
     system(MplayerCommand, *argv)
   end
 
+  def wait
+    log "waiting"
+  end
+
   def tell argv=argv
     log "Telling #{argv.inspect}"
+    buddies.run(argv)
+  end
+
+  def buddies
+    @buddies ||= DrbObject.new_with_uri(uri)
   end
 end
