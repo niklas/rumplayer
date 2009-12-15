@@ -26,7 +26,7 @@ class Rumplayer::Server
 
   def register(client, name=nil)
     watcher = Watcher.new(client, name || client.inspect)
-    log "connected #{watcher.inspect}"
+    log "connected #{watcher.name}"
 
     say("#{watcher.name} connected")
     @watchers << watcher
@@ -43,7 +43,12 @@ class Rumplayer::Server
   def each_watcher
     unless @watchers.blank?
       @watchers.each do |watcher|
-        yield(watcher)
+        begin
+          yield(watcher)
+        rescue DRb::DRbConnError => e
+          @watchers.delete(watcher)
+          log "disconnected #{watcher.name}"
+        end
       end
     end
   end
