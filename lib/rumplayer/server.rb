@@ -33,7 +33,7 @@ class Rumplayer::Server
 
   def start
     log "Starting Server"
-    DRb.start_service(uri, self)
+    DRb.start_service(config['uri'], self)
     DRb.thread.join
   end
 

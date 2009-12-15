@@ -68,7 +68,7 @@ class Rumplayer::Client
   end
 
   def buddies
-    @buddies ||= DRbObject.new_with_uri(uri)
+    @buddies ||= DRbObject.new_with_uri(config['uri'])
   end
 
   def is_slave?
