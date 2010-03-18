@@ -1,28 +1,30 @@
-== RuMplayer
+RuMplayer
+=========
 
 Given you and (at least) one of your buddies want to watch movies together, but
 on different devices which may be located (very) far from each other.
 
 With RuMplayer you can watch them simultaneously without having to leave your comfy home.
 
-== Requirements
+### Requirements
 
 * a public server where you can install RuMplayer an run the server.
-* all your buddies must have a copy of the movie to watch.
+* all your buddies must have 
+** a copy of the movie to watch, named equal
+** mplayer installed (apt, ports, you name it)
 
 
-== Installation
+### Installation
 
-    (sudo) gem install gemcutter
-    (sudo) gem tumble
+    (sudo) gem update --system
     (sudo) gem install rumplayer
 
     rumplayer
     CTRL+C
 
-Now, edit ~/.rumplayer.yml and add 
+Now, edit ~/.rumplayer.yml and add the url to you common server
 
-== Usage
+### Usage
 
 On the Server run:
 
